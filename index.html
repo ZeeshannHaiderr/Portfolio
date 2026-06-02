@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeeshan Haider — Embedded Systems & AI Hardware Engineer</title>
+<meta name="description" content="Electrical Engineer specializing in FPGA-based Edge-AI, FreeRTOS embedded systems, and hardware-software co-design. NUST, Islamabad.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg:         #050810;
+  --bg-2:       #080d18;
+  --surface:    #0d1424;
+  --surface-2:  #111b2e;
+  --border:     rgba(255,255,255,0.06);
+  --border-2:   rgba(255,255,255,0.10);
+  --text:       #e8edf5;
+  --text-2:     #8892a4;
+  --text-3:     #4a5568;
+  --gold:       #c9a84c;
+  --gold-glow:  rgba(201,168,76,0.15);
+  --teal:       #00d4aa;
+  --teal-glow:  rgba(0,212,170,0.12);
+  --blue:       #3b82f6;
+  --blue-glow:  rgba(59,130,246,0.12);
+  --purple:     #8b5cf6;
+  --red:        #ef4444;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html {
+  scroll-behavior: smooth;
+  cursor: none;
+}
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+::selection { background: rgba(201,168,76,0.3); color: var(--text); }
+
+/* Custom cursor */
+.cursor {
+  position: fixed;
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  position: fixed;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(201,168,76,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease-out, width 0.3s, height 0.3s, border-color 0.3s;
+}
+.cursor-ring.expand {
+  width: 48px; height: 48px;
+  border-color: var(--gold);
+}
+
+/* ═══════════════════════════════════════════════
+   NOISE OVERLAY
+═══════════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+/* ═══════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  padding: 20px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.4s, backdrop-filter 0.4s;
+}
+nav.scrolled {
+  background: rgba(5,8,16,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--text-2); }
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  padding: 8px 20px;
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  background: transparent;
+}
+.nav-cta:hover {
+  background: var(--gold-glow);
+  border-color: var(--gold);
+}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Animated grid */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 80%);
+}
+
+/* Radial glows */
+.hero-glow-1 {
+  position: absolute;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+  top: -200px; left: -100px;
+  pointer-events: none;
+}
+.hero-glow-2 {
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%);
+  bottom: -150px; right: -50px;
+  pointer-events: none;
+}
+
+/* Floating circuit lines */
+.circuit-lines {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.circuit-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent);
+  height: 1px;
+  animation: scanline 8s linear infinite;
+}
+.circuit-line:nth-child(1) { top: 25%; width: 40%; left: -40%; animation-delay: 0s; }
+.circuit-line:nth-child(2) { top: 55%; width: 60%; left: -60%; animation-delay: 2s; }
+.circuit-line:nth-child(3) { top: 75%; width: 35%; left: -35%; animation-delay: 4s; }
+.circuit-line-v {
+  position: absolute;
+  background: linear-gradient(180deg, transparent, rgba(0,212,170,0.12), transparent);
+  width: 1px;
+  animation: scanline-v 10s linear infinite;
+}
+.circuit-line-v:nth-child(4) { left: 20%; height: 50%; top: -50%; animation-delay: 1s; }
+.circuit-line-v:nth-child(5) { left: 70%; height: 40%; top: -40%; animation-delay: 5s; }
+
+@keyframes scanline {
+  0% { transform: translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(calc(100vw + 100%)); opacity: 0; }
+}
+@keyframes scanline-v {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(calc(100vh + 100%)); opacity: 0; }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  padding: 0 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.3s forwards;
+}
+.hero-eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 8px var(--teal);
+  animation: pulse-dot 2s ease infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+.hero-title {
+  font-size: clamp(52px, 7vw, 96px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.5s forwards;
+}
+.hero-title-em {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--gold);
+  display: block;
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--text-2);
+  font-weight: 400;
+  max-width: 540px;
+  margin: 24px 0 48px;
+  line-height: 1.7;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.7s forwards;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.9s forwards;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: var(--gold);
+  color: #050810;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.2);
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+.btn-primary:hover::before { transform: translateX(0); }
+.btn-primary:hover { box-shadow: 0 0 30px rgba(201,168,76,0.4); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border: 1px solid var(--border-2);
+  color: var(--text-2);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.btn-ghost:hover {
+  color: var(--text);
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.04);
+}
+
+/* Hero stats row */
+.hero-stats {
+  position: absolute;
+  bottom: 60px;
+  left: 0; right: 0;
+  padding: 0 48px;
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  opacity: 0;
+  animation: fadeUp 0.9s ease 1.1s forwards;
+}
+.hero-stat {
+  flex: 1;
+  padding: 28px 32px;
+  border-right: 1px solid var(--border);
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-val {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.hero-stat-val .unit { font-size: 16px; color: var(--gold); }
+.hero-stat-lbl {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute;
+  right: 48px;
+  bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.4s forwards;
+}
+.scroll-hint-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  writing-mode: vertical-rl;
+}
+.scroll-hint-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--text-3), transparent);
+  animation: scroll-line 2s ease infinite;
+}
+@keyframes scroll-line {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION COMMON
+═══════════════════════════════════════════════ */
+section {
+  padding: 120px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 24px; height: 1px;
+  background: var(--gold);
+}
+
+.section-title {
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.section-title em {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-2);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════
+   MARQUEE
+═══════════════════════════════════════════════ */
+.marquee-section {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+  overflow: hidden;
+  background: var(--surface);
+  max-width: 100%;
+}
+.marquee-track {
+  display: flex;
+  gap: 0;
+  animation: marquee 20s linear infinite;
+  white-space: nowrap;
+}
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 32px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.marquee-item span.accent { color: var(--gold); }
+.marquee-item::after {
+  content: '◆';
+  color: var(--text-3);
+  font-size: 6px;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════════
+   ABOUT / EXPERTISE
+═══════════════════════════════════════════════ */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  margin-top: 60px;
+}
+.about-text p {
+  font-size: 16px;
+  color: var(--text-2);
+  line-height: 1.85;
+  margin-bottom: 20px;
+}
+.about-text p strong { color: var(--text); font-weight: 600; }
+.about-text p.lead {
+  font-size: 18px;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+.expertise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.expertise-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: all 0.3s;
+  cursor: default;
+}
+.expertise-item:hover {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.expertise-icon {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.expertise-icon.gold { background: var(--gold-glow); }
+.expertise-icon.teal { background: var(--teal-glow); }
+.expertise-icon.blue { background: var(--blue-glow); }
+.expertise-icon.purple { background: rgba(139,92,246,0.12); }
+.expertise-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.expertise-desc {
+  font-size: 12px;
+  color: var(--text-3);
+  font-family: 'Space Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════════════ */
+#projects {
+  padding: 120px 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+#projects .inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.projects-grid {
+  margin-top: 60px;
+  display: grid;
+  gap: 2px;
+}
+
+/* Flagship card */
+.project-flagship {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400px;
+  transition: border-color 0.4s;
+  cursor: pointer;
+}
+.project-flagship:hover { border-color: rgba(201,168,76,0.3); }
+
+.project-flagship-visual {
+  position: relative;
+  background: var(--bg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animated FPGA SVG */
+.fpga-viz {
+  position: relative;
+  width: 280px;
+  height: 200px;
+}
+
+.fpga-board {
+  position: absolute;
+  inset: 20px;
+  border: 1.5px solid rgba(201,168,76,0.3);
+  border-radius: 4px;
+  background: rgba(201,168,76,0.03);
+}
+
+.fpga-chip {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; height: 60px;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+}
+.fpga-chip-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  color: var(--gold);
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+.fpga-pin {
+  position: absolute;
+  background: rgba(201,168,76,0.5);
+}
+/* top/bottom pins */
+.fpga-pin.h { width: 6px; height: 2px; }
+.fpga-pin.v { width: 2px; height: 6px; }
+
+.data-flow {
+  position: absolute;
+  background: var(--teal);
+  border-radius: 50%;
+  width: 4px; height: 4px;
+  box-shadow: 0 0 8px var(--teal);
+}
+
+.trace {
+  position: absolute;
+  background: rgba(0,212,170,0.2);
+  height: 1px;
+}
+.trace.anim {
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  animation: trace-flow 3s ease infinite;
+}
+@keyframes trace-flow {
+  0% { transform: scaleX(0) translateX(-50%); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: scaleX(1) translateX(50%); opacity: 0; }
+}
+
+.project-flagship-content {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.project-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  width: fit-content;
+}
+.project-tag.gold { color: var(--gold); background: var(--gold-glow); border: 1px solid rgba(201,168,76,0.2); }
+.project-tag.teal { color: var(--teal); background: var(--teal-glow); border: 1px solid rgba(0,212,170,0.2); }
+.project-tag.blue { color: var(--blue); background: var(--blue-glow); border: 1px solid rgba(59,130,246,0.2); }
+.project-tag.purple { color: var(--purple); background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.2); }
+
+.project-name {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.project-desc {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.project-metrics {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.project-metric { }
+.project-metric-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.project-metric-lbl {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-top: 3px;
+}
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tech-pill {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-2);
+  border-radius: 2px;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+  transition: all 0.3s;
+}
+.tech-pill:hover {
+  border-color: rgba(255,255,255,0.2);
+  color: var(--text-2);
+}
+
+/* Secondary projects grid */
+.projects-secondary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 2px;
+}
+.project-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 36px;
+  overflow: hidden;
+  transition: border-color 0.4s, background 0.4s;
+  cursor: pointer;
+}
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--bg) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.project-card:hover { border-color: rgba(255,255,255,0.12); }
+.project-card:hover::before { opacity: 0.5; }
+
+.project-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+.project-card-name {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.project-card-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.project-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.project-arrow {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border-2);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  color: var(--text-3);
+  transition: all 0.3s;
+}
+.project-card:hover .project-arrow {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-glow);
+}
+
+/* Glow accent on hover */
+.project-card .glow-corner {
+  position: absolute;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+  top: -40px; right: -40px;
+}
+.project-card:hover .glow-corner { opacity: 1; }
+.project-card.c-teal .glow-corner { background: radial-gradient(circle, var(--teal-glow), transparent 70%); }
+.project-card.c-blue .glow-corner { background: radial-gradient(circle, var(--blue-glow), transparent 70%); }
+.project-card.c-purple .glow-corner { background: radial-gradient(circle, rgba(139,92,246,0.12), transparent 70%); }
+.project-card.c-gold .glow-corner { background: radial-gradient(circle, var(--gold-glow), transparent 70%); }
+.project-card.c-red .glow-corner { background: radial-gradient(circle, rgba(239,68,68,0.12), transparent 70%); }
+
+/* ═══════════════════════════════════════════════
+   SKILLS / STACK
+═══════════════════════════════════════════════ */
+#skills {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 120px 0;
+  max-width: 100%;
+}
+#skills .inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+.skill-domain {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 32px;
+  transition: border-color 0.3s;
+}
+.skill-domain:hover { border-color: var(--border-2); }
+.skill-domain-icon {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+.skill-domain-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.skill-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.skill-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.skill-dot.gold { background: var(--gold); }
+.skill-dot.teal { background: var(--teal); }
+.skill-dot.blue { background: var(--blue); }
+.skill-dot.purple { background: var(--purple); }
+
+/* ═══════════════════════════════════════════════
+   EXPERIENCE
+═══════════════════════════════════════════════ */
+.experience-list {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.exp-item {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 0;
+  border: 1px solid var(--border);
+  transition: border-color 0.3s;
+  overflow: hidden;
+}
+.exp-item:hover { border-color: var(--border-2); }
+.exp-date-col {
+  padding: 36px 32px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.exp-date-range {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+}
+.exp-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+.exp-status-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 6px var(--teal);
+}
+.exp-main-col {
+  padding: 36px 40px;
+}
+.exp-role {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.exp-org {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.exp-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.exp-bullets li {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+  padding-left: 18px;
+  position: relative;
+}
+.exp-bullets li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: 10px;
+}
+
+/* ═══════════════════════════════════════════════
+   EDUCATION
+═══════════════════════════════════════════════ */
+.edu-card {
+  margin-top: 60px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: center;
+}
+.edu-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+}
+.edu-glow {
+  position: absolute;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, var(--gold-glow), transparent 70%);
+  top: -100px; right: -100px;
+  pointer-events: none;
+}
+.edu-uni {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.edu-degree {
+  font-size: 14px;
+  color: var(--gold);
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+}
+.edu-courses {
+  font-size: 13px;
+  color: var(--text-3);
+  line-height: 1.7;
+}
+.edu-courses strong { color: var(--text-2); }
+.edu-badge {
+  text-align: right;
+}
+.edu-year {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  line-height: 2;
+}
+.edu-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background: var(--teal-glow);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+
+/* ═══════════════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════════════ */
+#contact {
+  background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+  padding: 160px 0;
+  max-width: 100%;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#contact::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.contact-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+.contact-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 24px;
+}
+.contact-title {
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+.contact-title em {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--gold);
+}
+.contact-sub {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+.contact-links {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid var(--border-2);
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.contact-link:hover {
+  color: var(--text);
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.04);
+}
+.contact-link.primary {
+  background: var(--gold);
+  color: #050810;
+  border-color: var(--gold);
+  font-weight: 700;
+}
+.contact-link.primary:hover {
+  background: transparent;
+  color: var(--gold);
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg);
+}
+.footer-left {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+}
+.footer-right {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+}
+
+/* ═══════════════════════════════════════════════
+   GLASSMORPHISM PANELS (floaters)
+═══════════════════════════════════════════════ */
+.glass-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 40px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+/* ═══════════════════════════════════════════════
+   ANIMATED COUNTER
+═══════════════════════════════════════════════ */
+.counter { display: inline-block; }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .about-grid { grid-template-columns: 1fr; gap: 48px; }
+  .projects-secondary { grid-template-columns: 1fr 1fr; }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  .project-flagship { grid-template-columns: 1fr; }
+  .project-flagship-visual { min-height: 260px; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  section, #skills .inner, #projects .inner { padding: 0 24px; }
+  section { padding: 80px 24px; }
+  .hero-content { padding: 0 24px; }
+  .hero-stats { display: none; }
+  .scroll-hint { display: none; }
+  .projects-secondary { grid-template-columns: 1fr; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .exp-item { grid-template-columns: 1fr; }
+  .exp-date-col { border-right: none; border-bottom: 1px solid var(--border); }
+  .edu-card { grid-template-columns: 1fr; }
+  .marquee-section { padding: 16px 0; }
+  footer { flex-direction: column; gap: 8px; text-align: center; }
+  html { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+}
+
+/* ═══════════════════════════════════════════════
+   ACTIVE NAV
+═══════════════════════════════════════════════ */
+.nav-links a.active { color: var(--text); }
+.nav-links a.active::after { width: 100%; }
+
+/* ═══════════════════════════════════════════════
+   PAGE PROGRESS BAR
+═══════════════════════════════════════════════ */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--gold));
+  z-index: 9999;
+  width: 0%;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px rgba(0,212,170,0.5);
+}
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav id="navbar">
+  <a class="nav-logo" href="#">ZH<span>.dev</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="mailto:zeeshanh641786@gmail.com">Hire Me</a>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <div class="circuit-lines">
+    <div class="circuit-line"></div>
+    <div class="circuit-line"></div>
+    <div class="circuit-line"></div>
+    <div class="circuit-line-v"></div>
+    <div class="circuit-line-v"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      Available for Research Assistantships & Collaborations
+    </div>
+    <h1 class="hero-title">
+      Zeeshan<br>
+      <em class="hero-title-em">Haider</em>
+    </h1>
+    <p class="hero-sub">
+      <strong>Electrical Engineer</strong> building the future at the intersection of
+      <strong>FPGA silicon</strong>, <strong>Edge-AI</strong>, and
+      <strong>real-time embedded systems</strong>. Synthesizing custom neural networks
+      onto hardware and engineering intelligent machines — one clock cycle at a time.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn-primary">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        View Projects
+      </a>
+      <a href="mailto:zeeshanh641786@gmail.com" class="btn-ghost">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2.5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1 4l5 3 5-3" stroke="currentColor" stroke-width="1.2"/></svg>
+        Get in touch
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-val"><span class="counter" data-target="93">0</span><span class="unit">%</span></div>
+      <div class="hero-stat-lbl">FPGA CNN Accuracy</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val"><span class="counter" data-target="6">0</span><span class="unit">+</span></div>
+      <div class="hero-stat-lbl">Hardware Projects</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val"><span class="counter" data-target="97">0</span><span class="unit">%</span></div>
+      <div class="hero-stat-lbl">ML Model R² Score</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val"><span class="counter" data-target="2">0</span><span class="unit">+</span></div>
+      <div class="hero-stat-lbl">Research Internships</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <div class="scroll-hint-text">Scroll</div>
+  </div>
+</section>
+
+<!-- ═══════════════ MARQUEE ═══════════════ -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <!-- Duplicated for seamless loop -->
+    <span class="marquee-item"><span class="accent">Xilinx Virtex-7</span></span>
+    <span class="marquee-item">FreeRTOS</span>
+    <span class="marquee-item"><span class="accent">Edge-AI Acceleration</span></span>
+    <span class="marquee-item">STM32F7</span>
+    <span class="marquee-item"><span class="accent">MedGemma 1.5B</span></span>
+    <span class="marquee-item">Vivado HLS</span>
+    <span class="marquee-item"><span class="accent">FPGA Digital Design</span></span>
+    <span class="marquee-item">MPU6050 IMU</span>
+    <span class="marquee-item"><span class="accent">Custom CNN Synthesis</span></span>
+    <span class="marquee-item">UART · SPI · I2C</span>
+    <span class="marquee-item"><span class="accent">NUST, Islamabad</span></span>
+    <span class="marquee-item">PyTorch · Verilog · C++</span>
+    <!-- Duplicate -->
+    <span class="marquee-item"><span class="accent">Xilinx Virtex-7</span></span>
+    <span class="marquee-item">FreeRTOS</span>
+    <span class="marquee-item"><span class="accent">Edge-AI Acceleration</span></span>
+    <span class="marquee-item">STM32F7</span>
+    <span class="marquee-item"><span class="accent">MedGemma 1.5B</span></span>
+    <span class="marquee-item">Vivado HLS</span>
+    <span class="marquee-item"><span class="accent">FPGA Digital Design</span></span>
+    <span class="marquee-item">MPU6050 IMU</span>
+    <span class="marquee-item"><span class="accent">Custom CNN Synthesis</span></span>
+    <span class="marquee-item">UART · SPI · I2C</span>
+    <span class="marquee-item"><span class="accent">NUST, Islamabad</span></span>
+    <span class="marquee-item">PyTorch · Verilog · C++</span>
+  </div>
+</div>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<section id="about">
+  <div class="section-label reveal">About</div>
+  <h2 class="section-title reveal">Engineering <em>intelligence</em><br>into silicon</h2>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p class="lead">
+        I'm a final-year Electrical Engineering student at NUST, Islamabad — building at the bleeding edge of hardware AI and embedded systems.
+      </p>
+      <p>
+        My flagship project synthesizes a <strong>custom Convolutional Neural Network</strong> directly onto a <strong>Xilinx Virtex-7 FPGA</strong> via Vivado HLS, enabling real-time pneumonia diagnosis without cloud dependency — then pipes results into <strong>MedGemma 1.5B</strong> for automated clinical report generation.
+      </p>
+      <p>
+        Beyond AI hardware, I engineer <strong>FreeRTOS-based real-time control systems</strong>, computer vision pipelines with optical flow tracking, ML forecasting models, and full IoT solutions. I've interned at the <strong>SoC Lab at NUST</strong> on RTL design and Edge-AI research.
+      </p>
+      <p>
+        Seeking M.S. / Ph.D. research assistantships where I can push the boundary of <strong>edge computing and AI hardware acceleration</strong>.
+      </p>
+    </div>
+    <div class="expertise-list reveal" style="transition-delay: 0.15s">
+      <div class="expertise-item">
+        <div class="expertise-icon gold">🔲</div>
+        <div>
+          <div class="expertise-name">FPGA & Digital Design</div>
+          <div class="expertise-desc">Virtex-7 · Vivado HLS · Verilog · RTL</div>
+        </div>
+      </div>
+      <div class="expertise-item">
+        <div class="expertise-icon teal">⚡</div>
+        <div>
+          <div class="expertise-name">Embedded & Real-Time Systems</div>
+          <div class="expertise-desc">STM32 · FreeRTOS · Sensor Fusion · PID</div>
+        </div>
+      </div>
+      <div class="expertise-item">
+        <div class="expertise-icon blue">🧠</div>
+        <div>
+          <div class="expertise-name">AI & Machine Learning</div>
+          <div class="expertise-desc">CNN · LSTM · PyTorch · Edge Inference</div>
+        </div>
+      </div>
+      <div class="expertise-item">
+        <div class="expertise-icon purple">👁</div>
+        <div>
+          <div class="expertise-name">Computer Vision</div>
+          <div class="expertise-desc">OpenCV · Optical Flow · Harris Corner</div>
+        </div>
+      </div>
+      <div class="expertise-item">
+        <div class="expertise-icon gold">📡</div>
+        <div>
+          <div class="expertise-name">IoT & Connectivity</div>
+          <div class="expertise-desc">ESP32 · MQTT · GPS · Cloud Dashboards</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PROJECTS ═══════════════ -->
+<div id="projects" style="padding: 0; max-width: 100%;">
+  <div class="inner" style="padding-top:120px; padding-bottom: 0;">
+    <div class="section-label reveal">Projects</div>
+    <h2 class="section-title reveal">Systems I've <em>built</em></h2>
+  </div>
+  <div class="inner" style="padding-top:0; padding-bottom:0; max-width:100%; padding-left:0; padding-right:0;">
+    <div class="projects-grid" style="max-width:1200px; margin:0 auto; padding:0 48px;">
+
+      <!-- FLAGSHIP -->
+      <div class="project-flagship reveal">
+        <div class="project-flagship-visual">
+          <!-- Animated FPGA visualization -->
+          <div class="fpga-viz">
+            <!-- Board outline -->
+            <div class="fpga-board"></div>
+            <!-- Main chip -->
+            <div class="fpga-chip">
+              <div class="fpga-chip-label">VIRTEX-7<br>CNN</div>
+            </div>
+            <!-- Data flow particles - CSS animated dots -->
+            <svg width="280" height="200" style="position:absolute;top:0;left:0;" overflow="visible">
+              <!-- Trace lines -->
+              <line x1="0" y1="100" x2="100" y2="100" stroke="rgba(0,212,170,0.15)" stroke-width="1"/>
+              <line x1="180" y1="100" x2="280" y2="100" stroke="rgba(0,212,170,0.15)" stroke-width="1"/>
+              <line x1="140" y1="20" x2="140" y2="70" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+              <line x1="140" y1="130" x2="140" y2="180" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+              <!-- Animated flow dots -->
+              <circle r="3" fill="#00d4aa" opacity="0.9">
+                <animateMotion dur="3s" repeatCount="indefinite" path="M 20,100 L 100,100"/>
+                <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle r="3" fill="#00d4aa" opacity="0.9">
+                <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M 180,100 L 260,100"/>
+                <animate attributeName="opacity" values="0;1;1;0" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+              </circle>
+              <circle r="3" fill="#c9a84c" opacity="0.9">
+                <animateMotion dur="2.5s" begin="0.8s" repeatCount="indefinite" path="M 140,20 L 140,70"/>
+                <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" begin="0.8s" repeatCount="indefinite"/>
+              </circle>
+              <!-- Corner chip indicators -->
+              <rect x="22" y="22" width="16" height="10" fill="rgba(201,168,76,0.12)" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>
+              <rect x="242" y="22" width="16" height="10" fill="rgba(0,212,170,0.12)" stroke="rgba(0,212,170,0.3)" stroke-width="0.5"/>
+              <rect x="22" y="168" width="16" height="10" fill="rgba(59,130,246,0.12)" stroke="rgba(59,130,246,0.3)" stroke-width="0.5"/>
+              <rect x="242" y="168" width="16" height="10" fill="rgba(139,92,246,0.12)" stroke="rgba(139,92,246,0.3)" stroke-width="0.5"/>
+              <!-- Labels -->
+              <text x="14" y="18" font-family="Space Mono" font-size="5" fill="rgba(0,212,170,0.5)">UART</text>
+              <text x="234" y="18" font-family="Space Mono" font-size="5" fill="rgba(201,168,76,0.5)">XRAY</text>
+              <text x="10" y="190" font-family="Space Mono" font-size="5" fill="rgba(59,130,246,0.5)">GEMMA</text>
+              <text x="230" y="190" font-family="Space Mono" font-size="5" fill="rgba(139,92,246,0.5)">REPT</text>
+              <!-- Glow behind chip -->
+              <ellipse cx="140" cy="100" rx="55" ry="40" fill="rgba(201,168,76,0.05)"/>
+            </svg>
+            <!-- Animated grid overlay on visual -->
+            <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);background-size:20px 20px;pointer-events:none;"></div>
+          </div>
+          <!-- Tag overlay -->
+          <div style="position:absolute;bottom:20px;left:20px;">
+            <div class="glass-chip">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);"></span>
+              93.4% Hardware Accuracy
+            </div>
+          </div>
+        </div>
+
+        <div class="project-flagship-content">
+          <div class="project-tag gold">★ Flagship Final-Year Project</div>
+          <h3 class="project-name">Edge-AI Accelerator: FPGA-Powered Real-Time Pneumonia Diagnosis</h3>
+          <p class="project-desc">
+            Custom CNN synthesized natively onto a Xilinx Virtex-7 FPGA via Vivado HLS, achieving real-time medical image classification without cloud dependency. Connected to MedGemma 1.5B via UART for automated clinical report generation.
+          </p>
+          <div class="project-metrics">
+            <div class="project-metric">
+              <div class="project-metric-val">93.4%</div>
+              <div class="project-metric-lbl">FPGA Accuracy</div>
+            </div>
+            <div class="project-metric">
+              <div class="project-metric-val">90.5%</div>
+              <div class="project-metric-lbl">AUC Score</div>
+            </div>
+            <div class="project-metric">
+              <div class="project-metric-val">&lt;1s</div>
+              <div class="project-metric-lbl">Latency</div>
+            </div>
+          </div>
+          <div class="tech-stack">
+            <span class="tech-pill">Xilinx Virtex-7</span>
+            <span class="tech-pill">Vivado HLS</span>
+            <span class="tech-pill">Custom CNN</span>
+            <span class="tech-pill">MedGemma 1.5B</span>
+            <span class="tech-pill">Verilog</span>
+            <span class="tech-pill">C/C++</span>
+            <span class="tech-pill">Python</span>
+            <span class="tech-pill">UART</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECONDARY GRID -->
+      <div class="projects-secondary">
+
+        <div class="project-card c-teal reveal">
+          <div class="glow-corner"></div>
+          <div class="project-number">02</div>
+          <div class="project-tag teal">Embedded Systems</div>
+          <div class="project-card-name">FreeRTOS 2-Axis Gimbal Stabilization</div>
+          <p class="project-card-desc">Deterministic real-time stabilization platform using STM32F7 + MPU6050 at 100Hz. Complementary filter (α=0.92) for drift-free IMU fusion.</p>
+          <div class="project-card-footer">
+            <div class="tech-stack">
+              <span class="tech-pill">STM32F7</span>
+              <span class="tech-pill">FreeRTOS</span>
+              <span class="tech-pill">C/C++</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </div>
+
+        <div class="project-card c-blue reveal" style="transition-delay:0.1s">
+          <div class="glow-corner"></div>
+          <div class="project-number">03</div>
+          <div class="project-tag blue">Computer Vision</div>
+          <div class="project-card-name">Real-Time Object Tracking & Trajectory Mapping</div>
+          <p class="project-card-desc">Sparse optical flow pipeline using Lucas-Kanade + Harris Corner detection with Kalman-based trajectory smoothing for stable tracking.</p>
+          <div class="project-card-footer">
+            <div class="tech-stack">
+              <span class="tech-pill">OpenCV</span>
+              <span class="tech-pill">Python</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </div>
+
+        <div class="project-card c-gold reveal" style="transition-delay:0.2s">
+          <div class="glow-corner"></div>
+          <div class="project-number">04</div>
+          <div class="project-tag gold">Machine Learning</div>
+          <div class="project-card-name">Solar Power Forecasting — LSTM Networks</div>
+          <p class="project-card-desc">LSTM-based recurrent neural network achieving R²=97.65% for solar generation prediction. Captures complex temporal patterns with MAE of 0.134 kW.</p>
+          <div class="project-card-footer">
+            <div class="tech-stack">
+              <span class="tech-pill">PyTorch</span>
+              <span class="tech-pill">LSTM</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </div>
+
+        <div class="project-card c-purple reveal" style="transition-delay:0.3s">
+          <div class="glow-corner"></div>
+          <div class="project-number">05</div>
+          <div class="project-tag purple">Control Systems</div>
+          <div class="project-card-name">Magnetic Levitation — GA-Optimized PID</div>
+          <p class="project-card-desc">Linearized MLS-33 210 electromagnetic plant, derived G(s) = 26.044/(2.52s²+0.0013), tuned PID via Genetic Algorithm in Simulink.</p>
+          <div class="project-card-footer">
+            <div class="tech-stack">
+              <span class="tech-pill">MATLAB</span>
+              <span class="tech-pill">Simulink</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </div>
+
+        <div class="project-card c-teal reveal" style="transition-delay:0.4s">
+          <div class="glow-corner"></div>
+          <div class="project-number">06</div>
+          <div class="project-tag teal">IoT</div>
+          <div class="project-card-name">Real-Time Vehicle Tracking System</div>
+          <p class="project-card-desc">ESP32 + NEO-6M GPS transmitting geolocation over MQTT via Wi-Fi to live cloud dashboard. Event-driven batching for power optimization.</p>
+          <div class="project-card-footer">
+            <div class="tech-stack">
+              <span class="tech-pill">ESP32</span>
+              <span class="tech-pill">MQTT</span>
+              <span class="tech-pill">GPS</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </div>
+
+        <div class="project-card c-red reveal" style="transition-delay:0.5s">
+          <div class="glow-corner"></div>
+          <div class="project-number">07</div>
+          <div class="project-tag" style="color:#ef4444;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);">Electrical Machines</div>
+          <div class="project-card-name">BLDC Motor Speed & Torque Control</div>
+          <p class="project-card-desc">3-phase inverter using IR2101 + 6× N-MOSFETs with sensorless BEMF zero-crossing commutation via LM339 comparator. Arduino PWM control.</p>
+          <div class="project-card-footer">
+            <div class="tech-stack">
+              <span class="tech-pill">Arduino</span>
+              <span class="tech-pill">IR2101</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /inner -->
+  </div>
+</div>
+
+<!-- ═══════════════ SKILLS ═══════════════ -->
+<section id="skills" style="padding:0;max-width:100%;">
+  <div class="inner" style="padding-top:120px;padding-bottom:120px;">
+    <div class="section-label reveal">Technical Arsenal</div>
+    <h2 class="section-title reveal">What I <em>work with</em></h2>
+
+    <div class="skills-grid">
+      <div class="skill-domain reveal">
+        <div class="skill-domain-icon">🔲</div>
+        <div class="skill-domain-name">FPGA & Digital</div>
+        <div class="skill-items">
+          <div class="skill-item"><span class="skill-dot gold"></span>Xilinx Virtex-7</div>
+          <div class="skill-item"><span class="skill-dot gold"></span>Intel DE1-SoC</div>
+          <div class="skill-item"><span class="skill-dot gold"></span>Vivado / Vivado HLS</div>
+          <div class="skill-item"><span class="skill-dot gold"></span>Quartus Prime</div>
+          <div class="skill-item"><span class="skill-dot gold"></span>Verilog / VHDL</div>
+          <div class="skill-item"><span class="skill-dot gold"></span>RTL & FSM Design</div>
+          <div class="skill-item"><span class="skill-dot gold"></span>Hardware Acceleration</div>
+        </div>
+      </div>
+
+      <div class="skill-domain reveal" style="transition-delay:0.1s">
+        <div class="skill-domain-icon">⚡</div>
+        <div class="skill-domain-name">Embedded & Control</div>
+        <div class="skill-items">
+          <div class="skill-item"><span class="skill-dot teal"></span>STM32 (F4/F7)</div>
+          <div class="skill-item"><span class="skill-dot teal"></span>ESP32</div>
+          <div class="skill-item"><span class="skill-dot teal"></span>FreeRTOS</div>
+          <div class="skill-item"><span class="skill-dot teal"></span>I2C / SPI / UART</div>
+          <div class="skill-item"><span class="skill-dot teal"></span>PWM / MQTT / TCP</div>
+          <div class="skill-item"><span class="skill-dot teal"></span>PID & Sensor Fusion</div>
+          <div class="skill-item"><span class="skill-dot teal"></span>IMU / GPS Modules</div>
+        </div>
+      </div>
+
+      <div class="skill-domain reveal" style="transition-delay:0.2s">
+        <div class="skill-domain-icon">🧠</div>
+        <div class="skill-domain-name">AI & Software</div>
+        <div class="skill-items">
+          <div class="skill-item"><span class="skill-dot blue"></span>PyTorch / TensorFlow</div>
+          <div class="skill-item"><span class="skill-dot blue"></span>CNN Architecture</div>
+          <div class="skill-item"><span class="skill-dot blue"></span>LSTM / RNN</div>
+          <div class="skill-item"><span class="skill-dot blue"></span>Model Quantization</div>
+          <div class="skill-item"><span class="skill-dot blue"></span>OpenCV / Opt. Flow</div>
+          <div class="skill-item"><span class="skill-dot blue"></span>C / C++ / Python</div>
+          <div class="skill-item"><span class="skill-dot blue"></span>Assembly</div>
+        </div>
+      </div>
+
+      <div class="skill-domain reveal" style="transition-delay:0.3s">
+        <div class="skill-domain-icon">🛠</div>
+        <div class="skill-domain-name">Tools & Platforms</div>
+        <div class="skill-items">
+          <div class="skill-item"><span class="skill-dot purple"></span>STM32CubeIDE</div>
+          <div class="skill-item"><span class="skill-dot purple"></span>VS Code</div>
+          <div class="skill-item"><span class="skill-dot purple"></span>LTSpice / Proteus</div>
+          <div class="skill-item"><span class="skill-dot purple"></span>MATLAB / Simulink</div>
+          <div class="skill-item"><span class="skill-dot purple"></span>Google Colab / Kaggle</div>
+          <div class="skill-item"><span class="skill-dot purple"></span>GitHub / Git</div>
+          <div class="skill-item"><span class="skill-dot purple"></span>Linux / Terminal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EXPERIENCE ═══════════════ -->
+<section id="experience">
+  <div class="section-label reveal">Experience</div>
+  <h2 class="section-title reveal">Where I've <em>worked</em></h2>
+
+  <div class="experience-list">
+
+    <div class="exp-item reveal">
+      <div class="exp-date-col">
+        <div class="exp-date-range">June 2025<br>—<br>Sept 2025</div>
+        <div class="exp-status">
+          <span class="exp-status-dot"></span>
+          Research
+        </div>
+      </div>
+      <div class="exp-main-col">
+        <div class="exp-role">Research Intern</div>
+        <div class="exp-org">System on Chip (SoC) Lab, SINES — NUST, Islamabad</div>
+        <ul class="exp-bullets">
+          <li>Conducted deep-dive literature review on Edge-AI acceleration and model quantization techniques for FPGA deployment in real-time medical diagnostics.</li>
+          <li>Contributed to architectural planning of the lab's FPGA-based AI accelerator pipeline — directly informing the final-year project design.</li>
+          <li>Hands-on exposure to RTL design workflows, digital system testing protocols, and HLS synthesis tools in a formal academic research environment.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date-col">
+        <div class="exp-date-range">July 2024<br>—<br>Sept 2024</div>
+      </div>
+      <div class="exp-main-col">
+        <div class="exp-role">Engineering Intern</div>
+        <div class="exp-org">Korea EHT — Industrial Solutions (Remote)</div>
+        <ul class="exp-bullets">
+          <li>Performed electrical load sizing calculations for EHT (Electrical Heat Tracing) systems in industrial pipework and storage tanks.</li>
+          <li>Developed a Python-based GUI automation tool for cost estimation and cable selection logic, improving workflow efficiency.</li>
+          <li>Assisted in digitizing estimation workflows and documenting electrical design decisions for hazardous zone compliance.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date-col">
+        <div class="exp-date-range">2019</div>
+      </div>
+      <div class="exp-main-col">
+        <div class="exp-role">Industrial Intern</div>
+        <div class="exp-org">Fauji Fertilizer Company (FFC)</div>
+        <ul class="exp-bullets">
+          <li>Foundational industrial exposure to large-scale plant operations, electrical infrastructure, and instrumentation in a safety-critical environment.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ EDUCATION ═══════════════ -->
+<section id="education" style="padding-top:0;">
+  <div class="section-label reveal">Education</div>
+  <h2 class="section-title reveal">Where I <em>studied</em></h2>
+
+  <div class="edu-card reveal">
+    <div class="edu-glow"></div>
+    <div>
+      <div class="edu-uni">National University of Sciences &amp; Technology</div>
+      <div class="edu-degree">B.E. Electrical Engineering · SEECS, Islamabad</div>
+      <div class="edu-courses">
+        <strong>Relevant Coursework:</strong> Embedded Systems Design (EE-423) · Microprocessor Systems ·
+        Digital Logic Design · OOP · Electronic Circuit Design · Instrumentation &amp; Measurements ·
+        Linear Control Systems · Electrical Machines · Power Electronics · Probability &amp; Statistics
+      </div>
+    </div>
+    <div class="edu-badge">
+      <div class="edu-year">Oct 2022<br>—<br>May 2026</div>
+      <div class="edu-status">
+        <span style="width:5px;height:5px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);"></span>
+        Final Semester
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<div id="contact">
+  <div class="contact-inner">
+    <div class="contact-eyebrow reveal">Open to Opportunities</div>
+    <h2 class="contact-title reveal">Let's build<br>something <em>great</em></h2>
+    <p class="contact-sub reveal">
+      Looking for M.S./Ph.D. research assistantships, engineering roles, or collaborations in FPGA design, Edge-AI, or embedded systems. Let's connect.
+    </p>
+    <div class="contact-links reveal">
+      <a href="mailto:zeeshanh641786@gmail.com" class="contact-link primary">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2.5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1 4l5 3 5-3" stroke="currentColor" stroke-width="1.2"/></svg>
+        zeeshanh641786@gmail.com
+      </a>
+      <a href="https://github.com/ZeeshannHaiderr" target="_blank" class="contact-link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/zeeshan-haider-5a5522242/" target="_blank" class="contact-link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="footer-left">© 2026 Zeeshan Haider · Islamabad, Pakistan</div>
+  <div class="footer-right">B.E. EE · SEECS, NUST · Graduating May 2026</div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+   JAVASCRIPT
+═══════════════════════════════════════════════ -->
+<script>
+// ── Custom Cursor ──────────────────────────────
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0;
+let ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top = mouseY + 'px';
+});
+
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) *.12;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top = ringY + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button, .project-card, .project-flagship, .expertise-item').forEach(el => {
+  el.addEventListener('mouseenter', () => cursorRing.classList.add('expand'));
+  el.addEventListener('mouseleave', () => cursorRing.classList.remove('expand'));
+});
+
+// ── Progress Bar ──────────────────────────────
+const progressBar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (scrollTop / docHeight) * 100;
+  progressBar.style.width = progress + '%';
+});
+
+// ── Navbar scroll ─────────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── Reveal on scroll ──────────────────────────
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), 0);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ── Active nav links ──────────────────────────
+const sections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => sectionObserver.observe(s));
+
+// ── Animated Counters ─────────────────────────
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          el.textContent = target;
+          clearInterval(timer);
+        } else {
+          el.textContent = Math.floor(current);
+        }
+      }, 16);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+// ── Smooth scroll for nav links ───────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const href = a.getAttribute('href');
+    if (href === '#') return;
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// ── Parallax hero glows ───────────────────────
+const glow1 = document.querySelector('.hero-glow-1');
+const glow2 = document.querySelector('.hero-glow-2');
+window.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 30;
+  const y = (e.clientY / window.innerHeight - 0.5) * 30;
+  if (glow1) glow1.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+  if (glow2) glow2.style.transform = `translate(${-x * 0.3}px, ${-y * 0.3}px)`;
+});
+
+// ── Card tilt effect ──────────────────────────
+document.querySelectorAll('.project-card, .skill-domain').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width/2) / (rect.width/2);
+    const y = (e.clientY - rect.top - rect.height/2) / (rect.height/2);
+    card.style.transform = `perspective(800px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg) translateZ(4px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(800px) rotateY(0) rotateX(0) translateZ(0)';
+    card.style.transition = 'transform 0.5s ease';
+  });
+  card.addEventListener('mouseenter', () => {
+    card.style.transition = 'none';
+  });
+});
+</script>
+</body>
+</html>
